@@ -26,10 +26,9 @@ const roomSchema = new mongoose.Schema(
     },
     price: {
       type: Number,
-      trim: true,
       required: [true, "Price is required"],
     },
-    image: String, // URL TO IMAGE, MULTER UPLOAD
+    image: [], // URL TO IMAGE, MULTER UPLOAD
   },
   {
     collection: "rooms",
