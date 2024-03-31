@@ -1,4 +1,4 @@
-# Hotel-Api
+# Hotel-Reservation-Api
 
 ### ERD:
 
