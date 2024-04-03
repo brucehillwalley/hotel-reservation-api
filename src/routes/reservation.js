@@ -1,21 +1,23 @@
-"use strict";
-/*-------------------------------------------------------
-      NODEJS EXPRESS | HOTEL RESERVATION API
--------------------------------------------------------*/
-const router = require("express").Router();
-/*-------------------------------------------------------*/
-// Reservation Routes:
+"use strict"
+/* -------------------------------------------------------
+    NODEJS EXPRESS | HOTEL RESERVATION API
+------------------------------------------------------- */
 
-const Reservation = require("../controllers/reservation");
+const router = require("express").Router()
 
-router.route("/").get(Reservation.list).post(Reservation.create);
 
-router
-  .route("/:reservationId")
-  .get(Reservation.read)
-  .put(Reservation.update)
-  .patch(Reservation.update)
-  .delete(Reservation.delete);
+const reservation = require("../controllers/reservation")
+const permissions = require("../middlewares/permissions")
 
-module.exports = router;
- 
+router.route("/")
+    .get(permissions.isLogin, reservation.list)
+    .post(permissions.isLogin, reservation.create)
+   
+
+router.route("/:id")
+    .get(permissions.isLogin, reservation.read)
+    .put(permissions.isAdmin, reservation.update)
+    .patch(permissions.isAdmin, reservation.update)
+    .delete(permissions.isAdmin, reservation.delete)
+
+module.exports = router

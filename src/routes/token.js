@@ -1,6 +1,6 @@
 "use strict"
 /* -------------------------------------------------------
-    NODEJS EXPRESS | MIDNIGHT CODERS HOTEL API
+    NODEJS EXPRESS | HOTEL RESERVATION API
 ------------------------------------------------------- */
 const router = require('express').Router()
 /* ------------------------------------------------------- */
