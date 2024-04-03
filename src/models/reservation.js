@@ -1,65 +1,93 @@
 "use strict";
 /* -------------------------------------------------------
-    NODEJS EXPRESS |  HOTEL RESERVATION API
+    NODEJS EXPRESS | HOTEL RESERVATION API
 ------------------------------------------------------- */
 
-const { mongoose } = require("../configs/dbConnection");
-/* ------------------------------------------------------- */
+const {
+  mongoose: { Schema, model },
+} = require("../configs/dbConnection");
 
-// Reservation Schema
-const ReservationSchema = new mongoose.Schema(
+const ReservationSchema = new Schema(
   {
     userId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-  
+
     roomId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "Room",
       required: true,
     },
 
-    checkInDate: {
+    arrival_date: {
       type: Date,
-      required: [true, "Check in date is required"],
-      default: Date.now,
+      required: [
+        true,
+        "Please enter your arrival_date in YEAR-MONTH-DAY format",
+      ],
     },
-    checkOutDate: {
+
+    departure_date: {
       type: Date,
-      required: [true, "Check out date is required"],
-      default: Date.now,
+      required: [
+        true,
+        "Please enter your departure_date in YEAR-MONTH-DAY format",
+      ],
     },
-    guestNumber: {
+
+    guest_number: {
       type: Number,
-      required: [true, "Guest number is required"],
-      min: [1, "Guest number can not be less than 1"],
-      max: [5, "Guest number can not be more than 5"],
+      default: 1,
     },
-    nights: {
+
+    night: {
       type: Number,
-      required: [true, "Nights is required"],
-      default:1
+      // required: true,
+      // set: function (){
+      //     return Number(this.departure_date.split("-")[2]) - Number(this.arrival_date.split("-")[2])
+      // }  //! if user makes a reservation in a month
+      set: function () {
+        const arrival = new Date(this.arrival_date); //! arrival_date in milliseconds
+        const departure = new Date(this.departure_date); //! departure_date in milliseconds
+        const difference = departure - arrival;
+
+        const millisecondsPerDay = 1000 * 60 * 60 * 24; //! milliseconds in a day
+        const night = Math.floor(difference / millisecondsPerDay); //! calculate the night as a day
+
+        return night;
+      },
     },
+
     price: {
       type: Number,
-      required: [true, "Price is required"],
+      // required: true,
+      // enum: [100, 150, 200, 300],
     },
+
     totalPrice: {
       type: Number,
-      default: function () {
-        return this.price * this.nights;
-      },
-      transform: function (){
-        return this.price * this.nights}
+      // required: true,
+      //   set: function(){
+      //     if(this.guest_number == 1){
+      //           return this.totalprice = this.price.enum[0]
+      //     }else if(this.guest_number == 2){
+      //           return this.totalprice = this.price.enum[1]
+      //     }else if(this.guest_number == 4){
+      //         return this.totalprice = this.price.enum[2]
+      //     }else if(this.guest_number > 4 ){
+      //         return this.totalprice = this.price.enum[3]
+      //     }else {
+      //         throw new Error("Please enter a valid number")
+      //     }
+      // }
     },
   },
   {
-    collection: "Reservations",
+    collection: "reservations",
     timestamps: true,
   }
 );
 
-// Reservation Model:
-module.exports = mongoose.model("Reservation", ReservationSchema);
+module.exports = model("Reservation", ReservationSchema);

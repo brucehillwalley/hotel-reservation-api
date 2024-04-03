@@ -26,6 +26,7 @@ module.exports = {
       "userId",
       "roomId",
     ]);
+    console.log(data);
 
     res.status(200).send({
       error: false,
@@ -150,8 +151,6 @@ module.exports = {
     });
   },
 };
-
-
 
 // const hiredRoom = availableRooms.push(room[0]._id)
 
